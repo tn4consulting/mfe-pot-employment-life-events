@@ -133,5 +133,8 @@ jobs:
             [ "$status" = "200" ] && break
             sleep 2
           done
-          curl -sf -H "Host: employment-life-events.mfe-pot.local" http://localhost/ | grep -qi '<script src="env.js">'
+          # No env.js script tag to check for here -- unlike every other
+          # extracted app, this one never got the runtime-config migration
+          # (see CLAUDE.md); check for its actual root element instead.
+          curl -sf -H "Host: employment-life-events.mfe-pot.local" http://localhost/ | grep -qi '<msca-le-root'
           curl -sf -H "Host: employment-life-events.mfe-pot.local" http://localhost/env.js
