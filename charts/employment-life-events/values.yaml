@@ -7,13 +7,13 @@ frontend:
     pullPolicy: IfNotPresent
   containerPort: 80
   servicePort: 80
-  # No runtimeConfig entries -- unlike every other extracted app, this one
-  # has no src/runtime-config.ts and no public/env.js script tag at all
-  # (confirmed against the platform repo: it was never in the list of
-  # apps the runtime-config migration touched). The ConfigMap/entrypoint
-  # mechanism still runs (writes an inert env.js nothing reads), harmless
-  # but genuinely unused here.
-  runtimeConfig: {}
+  # This app now has a src/runtime-config.ts and public/env.js (added
+  # specifically for ContentClient's strapiBaseUrl -- see
+  # content-client.token.ts in libs/feature-guided-journey). strapiBaseUrl
+  # is browser-to-server, the real public Ingress hostname from
+  # mfe-pot-platform's charts/strapi, not in-cluster Service DNS.
+  runtimeConfig:
+    strapiBaseUrl: "http://cms.mfe-pot.local"
 
 ingress:
   host: employment-life-events.mfe-pot.local

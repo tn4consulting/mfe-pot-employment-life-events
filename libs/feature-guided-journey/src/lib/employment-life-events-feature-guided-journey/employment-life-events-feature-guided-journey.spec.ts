@@ -1,6 +1,5 @@
 import { Component } from '@angular/core';
 import { TestBed } from '@angular/core/testing';
-import { TranslocoTestingModule } from '@tn4consulting/shared-i18n';
 import { PAYMENT_HISTORY_WIDGET_LOADER } from '@tn4consulting/shared-federation-runtime';
 import { EmploymentLifeEventsFeatureGuidedJourney } from './employment-life-events-feature-guided-journey';
 
@@ -10,13 +9,7 @@ class FakeWidget {}
 describe('EmploymentLifeEventsFeatureGuidedJourney', () => {
   function setup(loader?: () => Promise<unknown>) {
     return TestBed.configureTestingModule({
-      imports: [
-        EmploymentLifeEventsFeatureGuidedJourney,
-        TranslocoTestingModule.forRoot({
-          langs: { en: {}, fr: {} },
-          translocoConfig: { availableLangs: ['en', 'fr'], defaultLang: 'en' },
-        }),
-      ],
+      imports: [EmploymentLifeEventsFeatureGuidedJourney],
       providers: loader ? [{ provide: PAYMENT_HISTORY_WIDGET_LOADER, useValue: loader }] : [],
     }).compileComponents();
   }

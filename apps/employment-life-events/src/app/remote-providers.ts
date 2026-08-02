@@ -1,4 +1,6 @@
 import { provideMfeTransloco } from '@tn4consulting/shared-i18n';
+import { CONTENT_CLIENT, createContentClient } from './content-client.token';
+import { loadRuntimeConfig } from '../runtime-config';
 
 // Split across two statements deliberately: Vite/esbuild specially
 // recognize the inline pattern `new URL('...', import.meta.url)` and
@@ -9,4 +11,13 @@ import { provideMfeTransloco } from '@tn4consulting/shared-i18n';
 const moduleUrl = import.meta.url;
 const assetBaseUrl = new URL('.', moduleUrl).href;
 
-export const REMOTE_PROVIDERS = provideMfeTransloco(assetBaseUrl);
+// A Promise, not a plain array, now that ContentClient needs this app's own
+// fetched strapiBaseUrl (see runtime-config.ts) -- RemoteRouteHost already
+// awaits REMOTE_PROVIDERS either way (see shared-federation-runtime).
+export const REMOTE_PROVIDERS = loadRuntimeConfig(assetBaseUrl).then((runtimeConfig) => [
+  ...provideMfeTransloco(assetBaseUrl),
+  {
+    provide: CONTENT_CLIENT,
+    useValue: createContentClient(runtimeConfig.strapiBaseUrl),
+  },
+]);

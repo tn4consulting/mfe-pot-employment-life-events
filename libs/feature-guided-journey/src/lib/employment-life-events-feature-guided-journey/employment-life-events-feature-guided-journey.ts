@@ -2,23 +2,39 @@ import {
   AfterViewInit,
   Component,
   EnvironmentInjector,
+  Input,
   ViewChild,
   ViewContainerRef,
   createEnvironmentInjector,
   inject,
 } from '@angular/core';
-import { TranslocoPipe } from '@tn4consulting/shared-i18n';
 import { PAYMENT_HISTORY_WIDGET_LOADER } from '@tn4consulting/shared-federation-runtime';
 
 @Component({
   selector: 'lib-employment-life-events-feature-guided-journey',
-  imports: [TranslocoPipe],
+  imports: [],
   templateUrl: './employment-life-events-feature-guided-journey.html',
   styleUrl: './employment-life-events-feature-guided-journey.css',
 })
 export class EmploymentLifeEventsFeatureGuidedJourney
   implements AfterViewInit
 {
+  // Resolved Transloco strings, passed down from the app root rather than
+  // this lib importing TranslocoPipe/@tn4consulting/shared-i18n itself.
+  // Importing it here too (alongside the app's own import for
+  // 'auth.signInRequired') hit a real esbuild/Vite bundling bug: this lib
+  // and the app end up as two separately-bundled copies of shared-i18n
+  // with mismatched InjectionToken identities (NG0201: no provider for
+  // TRANSLOCO_TRANSPILER, alongside an NG0912 component-ID collision
+  // naming a duplicated TranslocoLoaderComponent) -- confirmed by testing
+  // this exact pre-existing code before any other change. Same class of
+  // bug the platform's CLAUDE.md documents for native-federation itself
+  // ("a plain Nx library must never import [it] directly"); the fix here
+  // is the same shape -- take the resolved value via the app instead of
+  // importing the package a second time.
+  @Input() paymentsHeading = '';
+  @Input() widgetUnavailableText = '';
+
   @ViewChild('paymentHistoryWidgetHost', { read: ViewContainerRef })
   private paymentHistoryWidgetHost!: ViewContainerRef;
 

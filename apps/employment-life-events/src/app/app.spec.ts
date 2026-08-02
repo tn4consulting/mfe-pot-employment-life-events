@@ -1,11 +1,20 @@
 import { TestBed } from '@angular/core/testing';
 import { provideRouter } from '@angular/router';
+import { ContentClient } from '@tn4consulting/shared-content-client';
 import { TranslocoTestingModule } from '@tn4consulting/shared-i18n';
 import { clearSession, createMockSession, storeSession } from '@tn4consulting/shared-auth';
+import { CONTENT_CLIENT } from './content-client.token';
 import { App } from './app';
 
 describe('App', () => {
-  afterEach(() => clearSession());
+  const contentClient: jest.Mocked<ContentClient> = {
+    getPageContent: jest.fn().mockResolvedValue(null),
+  };
+
+  afterEach(() => {
+    clearSession();
+    contentClient.getPageContent.mockReset().mockResolvedValue(null);
+  });
 
   async function setup() {
     await TestBed.configureTestingModule({
@@ -19,7 +28,7 @@ describe('App', () => {
           translocoConfig: { availableLangs: ['en', 'fr'], defaultLang: 'en' },
         }),
       ],
-      providers: [provideRouter([])],
+      providers: [provideRouter([]), { provide: CONTENT_CLIENT, useValue: contentClient }],
     }).compileComponents();
   }
 
@@ -39,6 +48,21 @@ describe('App', () => {
     expect(
       compiled.querySelector('lib-employment-life-events-feature-guided-journey'),
     ).not.toBeNull();
+  });
+
+  it('renders intro content fetched via ContentClient', async () => {
+    storeSession(createMockSession());
+    contentClient.getPageContent.mockResolvedValue({
+      key: 'employment-life-events.intro',
+      title: "You lost your job — here's what to do next",
+      body: 'Guidance on CVs, job search, and Employment Insurance.',
+    });
+    await setup();
+    const fixture = TestBed.createComponent(App);
+    await fixture.componentInstance.ngOnInit();
+    fixture.detectChanges();
+    const compiled = fixture.nativeElement as HTMLElement;
+    expect(compiled.querySelector('h1')?.textContent).toContain('You lost your job');
   });
 
   it('blocks its own content when there is no active session, independent of the shell', async () => {
