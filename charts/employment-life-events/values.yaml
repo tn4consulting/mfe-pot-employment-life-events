@@ -1,0 +1,20 @@
+frontend:
+  name: employment-life-events
+  replicaCount: 1
+  image:
+    repository: mfe-pot-employment-life-events
+    tag: latest
+    pullPolicy: IfNotPresent
+  containerPort: 80
+  servicePort: 80
+  # No runtimeConfig entries -- unlike every other extracted app, this one
+  # has no src/runtime-config.ts and no public/env.js script tag at all
+  # (confirmed against the platform repo: it was never in the list of
+  # apps the runtime-config migration touched). The ConfigMap/entrypoint
+  # mechanism still runs (writes an inert env.js nothing reads), harmless
+  # but genuinely unused here.
+  runtimeConfig: {}
+
+ingress:
+  host: employment-life-events.mfe-pot.local
+  className: nginx
