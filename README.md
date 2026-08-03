@@ -1,5 +1,11 @@
 # mfe-pot-employment-life-events
 
+> **Disclaimer:** This is an independent proof-of-technology project, not
+> affiliated with, endorsed by, or associated with Service Canada,
+> Employment and Social Development Canada (ESDC), or the Government of
+> Canada in any way. Any GC branding/design-system references are used only
+> to ground the proof of technology in a realistic scenario.
+
 The **client-centric "you lost your job" guided journey** frontend for the
 mfe-pot Government of Canada MFE proof-of-technology — stitches
 `mfe-pot-job-bank`, `mfe-pot-employment-insurance`, and `mfe-pot-dashboard`
