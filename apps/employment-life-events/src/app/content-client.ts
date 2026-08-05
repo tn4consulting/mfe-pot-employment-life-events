@@ -1,4 +1,3 @@
-import { InjectionToken } from '@angular/core';
 import {
   ContentClient,
   PageContent,
@@ -26,12 +25,6 @@ const STATIC_CONTENT: Record<string, Record<'en' | 'fr', PageContent>> = {
   },
 };
 
-// Provided from REMOTE_PROVIDERS (not a plain module-level singleton) because
-// it needs this app's own fetched strapiBaseUrl -- see runtime-config.ts.
-export const CONTENT_CLIENT = new InjectionToken<ContentClient>('CONTENT_CLIENT');
-
 export function createContentClient(strapiBaseUrl: string | undefined): ContentClient {
-  return strapiBaseUrl
-    ? new StrapiContentClient(strapiBaseUrl)
-    : new StaticContentClient(STATIC_CONTENT);
+  return strapiBaseUrl ? new StrapiContentClient(strapiBaseUrl) : new StaticContentClient(STATIC_CONTENT);
 }

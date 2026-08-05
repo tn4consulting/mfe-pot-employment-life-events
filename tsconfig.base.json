@@ -20,10 +20,7 @@
     "noImplicitOverride": true,
     "noImplicitReturns": true,
     "noUnusedLocals": true,
-    "types": ["node"],
-    "paths": {
-      "employment-life-events-feature-guided-journey": ["./libs/feature-guided-journey/src/index.ts"]
-    }
+    "types": ["node"]
   },
   "exclude": ["node_modules", "tmp"]
 }

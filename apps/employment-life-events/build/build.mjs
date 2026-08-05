@@ -1,0 +1,64 @@
+// Production/development build for the React employment-life-events
+// remote, run via the `build` Nx target (nx:run-commands, cwd = repo
+// root). Replaces the `@angular-architects/native-federation:build`
+// executor -- this app no longer has any Angular in it. Mirrors the
+// sibling mfe-pot-job-bank repo's apps/job-bank/build/build.mjs almost
+// exactly -- this app, like job-bank, is a plain federation remote (not a
+// host), so it needs both a federation build (for `./Component`) and a
+// standalone build (for direct, non-federated access) -- see that file's
+// own extensive comments for the fuller story on why these are two
+// genuinely separate esbuild invocations.
+import { runEsBuildBuilder } from '@softarc/native-federation-esbuild';
+import * as esbuild from 'esbuild';
+import { cp, mkdir, rm } from 'node:fs/promises';
+import { createRequire } from 'node:module';
+import { join } from 'node:path';
+
+const require = createRequire(import.meta.url);
+
+const dev = process.argv.includes('--dev');
+const outputPath = 'dist/apps/employment-life-events/browser';
+
+await rm(outputPath, { recursive: true, force: true });
+await mkdir(outputPath, { recursive: true });
+
+await cp('apps/employment-life-events/public', outputPath, { recursive: true });
+await cp('apps/employment-life-events/src/index.html', join(outputPath, 'index.html'));
+await cp(require.resolve('es-module-shims'), join(outputPath, 'es-module-shims.js'));
+
+// Deliberately NOT using @softarc/native-federation-esbuild's built-in
+// `reactFrameworkPlugin()` wholesale -- see job-bank's build.mjs for the
+// full explanation: its hardcoded dev/prod file-replacement map is stale
+// against React 19. `frameworks: [{ needsCommonJsPlugin: true }]` keeps
+// the one flag that actually matters (the shared react/react-dom chunks'
+// CJS-interop) without reintroducing that stale map.
+const result = await runEsBuildBuilder('apps/employment-life-events/federation.config.mjs', {
+  workspaceRoot: process.cwd(),
+  outputPath,
+  tsConfig: 'apps/employment-life-events/tsconfig.federation.json',
+  packageJson: 'package.json',
+  dev,
+  watch: false,
+  adapterConfig: {
+    plugins: [],
+    frameworks: [{ needsCommonJsPlugin: true }],
+  },
+});
+await result.close();
+
+await esbuild.build({
+  entryPoints: ['apps/employment-life-events/src/main.tsx'],
+  outfile: join(outputPath, 'main.js'),
+  bundle: true,
+  format: 'esm',
+  platform: 'browser',
+  jsx: 'automatic',
+  target: 'es2022',
+  minify: !dev,
+  sourcemap: true,
+  define: {
+    'process.env.NODE_ENV': JSON.stringify(dev ? 'development' : 'production'),
+  },
+});
+
+console.log(`employment-life-events built to ${outputPath} (${dev ? 'development' : 'production'})`);

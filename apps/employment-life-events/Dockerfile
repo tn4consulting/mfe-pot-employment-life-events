@@ -21,7 +21,6 @@ ENV CI=true
 RUN corepack enable && corepack prepare pnpm@10.33.2 --activate
 COPY package.json pnpm-lock.yaml pnpm-workspace.yaml nx.json tsconfig.base.json tsconfig.json .npmrc ./
 COPY apps ./apps
-COPY libs ./libs
 COPY tools ./tools
 RUN --mount=type=secret,id=npm_token \
     --mount=type=cache,target=/root/.local/share/pnpm/store \
