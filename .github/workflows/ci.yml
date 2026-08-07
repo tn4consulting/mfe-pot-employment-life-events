@@ -129,12 +129,12 @@ jobs:
           # ingress-nginx's own reconciliation loop to pick up the new
           # Ingress resource -- give it a few seconds before asserting.
           for i in $(seq 1 30); do
-            status=$(curl -s -o /dev/null -w '%{http_code}' -H "Host: employment-life-events.mfe-pot.local" http://localhost/ || echo 000)
+            status=$(curl -s -o /dev/null -w '%{http_code}' -H "Host: employment-life-events-mfe.mfe-pot.local" http://localhost/ || echo 000)
             [ "$status" = "200" ] && break
             sleep 2
           done
           # No env.js script tag to check for here -- unlike every other
           # extracted app, this one never got the runtime-config migration
           # (see CLAUDE.md); check for its actual root element instead.
-          curl -sf -H "Host: employment-life-events.mfe-pot.local" http://localhost/ | grep -qi '<msca-le-root'
-          curl -sf -H "Host: employment-life-events.mfe-pot.local" http://localhost/env.js
+          curl -sf -H "Host: employment-life-events-mfe.mfe-pot.local" http://localhost/ | grep -qi '<msca-le-root'
+          curl -sf -H "Host: employment-life-events-mfe.mfe-pot.local" http://localhost/env.js

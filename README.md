@@ -76,10 +76,10 @@ dependency resolves via a `file://../../../mfe-pot-platform/charts/...`
 relative path). Add to `/etc/hosts`:
 
 ```
-127.0.0.1 employment-life-events.mfe-pot.local
+127.0.0.1 employment-life-events-mfe.mfe-pot.local
 ```
 
-Then `curl -H "Host: employment-life-events.mfe-pot.local" http://localhost/`
+Then `curl -H "Host: employment-life-events-mfe.mfe-pot.local" http://localhost/`
 or browse there directly.
 
 ## Where to go next

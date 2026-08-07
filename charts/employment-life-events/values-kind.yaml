@@ -10,5 +10,5 @@ frontend:
     pullPolicy: Never
 
 ingress:
-  host: employment-life-events.mfe-pot.local
+  host: employment-life-events-mfe.mfe-pot.local
   className: nginx
