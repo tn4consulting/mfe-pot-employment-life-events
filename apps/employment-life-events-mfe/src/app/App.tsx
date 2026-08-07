@@ -11,6 +11,7 @@ import { createContentClient, INTRO_CONTENT_KEY } from './content-client';
 import { loadRuntimeConfig } from '../runtime-config';
 import { assetBaseUrl } from './asset-base-url';
 import { GuidedJourney } from './GuidedJourney';
+import './register-scds';
 
 /**
  * Does its own setup entirely -- no host-provided REMOTE_PROVIDERS
@@ -20,17 +21,20 @@ import { GuidedJourney } from './GuidedJourney';
  * "the shell let me navigate here, so I'm authorized" (see CLAUDE.md's
  * "Security: defense in depth" section).
  *
- * `journey.paymentsHeading`/`journey.widgetUnavailable` are resolved here
- * and passed down to GuidedJourney as plain string props, mirroring the
- * Angular version's shape -- but for a different reason now. The Angular
- * version *had* to do this: importing shared-i18n's TranslocoPipe
- * directly in the feature lib as well as here crashed the whole page
- * (NG0201/NG0912, two separately-bundled copies of shared-i18n with
- * mismatched InjectionToken identities -- see this repo's own CLAUDE.md).
- * React has no per-bundle DI-singleton-identity concept, so that bug
- * class can't recur here; GuidedJourney could safely call
- * useTranslations itself. Kept as props anyway, simply because it avoids
- * a second redundant fetch of the same translation file.
+ * Every `journey.*` chrome string (checklist headings, action/status
+ * labels) is resolved here into one `labels` object and passed down to
+ * GuidedJourney as a plain prop, mirroring the Angular version's shape --
+ * but for a different reason now. The Angular version *had* to do this:
+ * importing shared-i18n's TranslocoPipe directly in the feature lib as
+ * well as here crashed the whole page (NG0201/NG0912, two
+ * separately-bundled copies of shared-i18n with mismatched InjectionToken
+ * identities -- see this repo's own CLAUDE.md). React has no per-bundle
+ * DI-singleton-identity concept, so that bug class can't recur here;
+ * GuidedJourney could safely call useTranslations itself. Kept as props
+ * anyway, simply because it avoids a second redundant fetch of the same
+ * translation file. `locale` is passed alongside for the checklist
+ * sections' own bilingual static content (checklist-data.ts), which isn't
+ * sourced from this translation file at all.
  */
 export function App() {
   const [hasAccess, setHasAccess] = useState(() => hasClaim(getStoredSession(), CLAIM_EMPLOYMENT_LIFE_EVENTS));
@@ -96,8 +100,27 @@ export function App() {
         <p role="alert">Page content is temporarily unavailable.</p>
       ) : null}
       <GuidedJourney
-        paymentsHeading={t('journey.paymentsHeading')}
-        widgetUnavailableText={t('journey.widgetUnavailable')}
+        locale={locale}
+        labels={{
+          checklistsHeading: t('journey.checklistsHeading'),
+          markDone: t('journey.markDone'),
+          completed: t('journey.completed'),
+          status: t('journey.status'),
+          paymentsHeading: t('journey.paymentsHeading'),
+          widgetUnavailableText: t('journey.widgetUnavailable'),
+          jobSearchTitle: t('journey.jobSearch.title'),
+          jobSearchBody: t('journey.jobSearch.body'),
+          jobSearchAction: t('journey.jobSearch.action'),
+          jobSearchWidgetUnavailable: t('journey.jobSearch.widgetUnavailable'),
+          eiHeading: t('journey.eiHeading'),
+          eiApplyTitle: t('journey.eiApply.title'),
+          eiApplyBody: t('journey.eiApply.body'),
+          eiApplyAction: t('journey.eiApply.action'),
+          eiReportTitle: t('journey.eiReport.title'),
+          eiReportBody: t('journey.eiReport.body'),
+          eiReportAction: t('journey.eiReport.action'),
+          eiWidgetUnavailable: t('journey.eiReport.widgetUnavailable'),
+        }}
       />
     </>
   );

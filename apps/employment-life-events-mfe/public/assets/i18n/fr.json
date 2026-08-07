@@ -1,7 +1,29 @@
 {
   "journey": {
     "paymentsHeading": "Vos paiements en un coup d'œil",
-    "widgetUnavailable": "Le widget de l'historique des paiements est temporairement indisponible."
+    "widgetUnavailable": "Le widget de l'historique des paiements est temporairement indisponible.",
+    "checklistsHeading": "Votre liste de vérification",
+    "markDone": "Marquer comme fait",
+    "completed": "Terminé",
+    "status": "Voir l'état",
+    "eiHeading": "Présentez une demande d'assurance-emploi et faites vos relevés",
+    "jobSearch": {
+      "title": "Cherchez un emploi et postulez sur Guichet-Emplois",
+      "body": "Parcourez les offres d'emploi qui correspondent à vos compétences et postulez directement sur Guichet-Emplois.",
+      "action": "Chercher sur Guichet-Emplois",
+      "widgetUnavailable": "L'état de vos candidatures sur Guichet-Emplois est temporairement indisponible."
+    },
+    "eiApply": {
+      "title": "Présentez une demande d'assurance-emploi",
+      "body": "Présentez votre demande de prestations d'assurance-emploi en ligne dès que vous cessez de travailler — même si vous n'avez pas encore votre RE, une demande immédiate évite de retarder votre premier versement.",
+      "action": "Faire une demande d'assurance-emploi"
+    },
+    "eiReport": {
+      "title": "Soumettez votre relevé d'assurance-emploi toutes les deux semaines",
+      "body": "Une fois votre demande active, remplissez votre relevé toutes les deux semaines — même si vous n'avez aucun revenu à déclarer — sinon vos versements cesseront.",
+      "action": "Soumettre votre relevé",
+      "widgetUnavailable": "L'état de vos relevés d'assurance-emploi est temporairement indisponible."
+    }
   },
   "auth": {
     "signInRequired": "Vous devez ouvrir une session pour consulter votre parcours guidé."

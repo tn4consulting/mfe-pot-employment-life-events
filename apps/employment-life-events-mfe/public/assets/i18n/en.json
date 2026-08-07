@@ -1,7 +1,29 @@
 {
   "journey": {
     "paymentsHeading": "Your payments at a glance",
-    "widgetUnavailable": "The payment history widget is temporarily unavailable."
+    "widgetUnavailable": "The payment history widget is temporarily unavailable.",
+    "checklistsHeading": "Your checklist",
+    "markDone": "Mark as done",
+    "completed": "Completed",
+    "status": "View status",
+    "eiHeading": "Apply for EI and keep up with reporting",
+    "jobSearch": {
+      "title": "Search and apply for jobs on Job Bank",
+      "body": "Browse job postings that match your skills and apply directly through Job Bank.",
+      "action": "Search Job Bank",
+      "widgetUnavailable": "Job Bank application status is temporarily unavailable."
+    },
+    "eiApply": {
+      "title": "Apply for Employment Insurance",
+      "body": "Apply for EI benefits online as soon as you stop working — even if you don't have your ROE yet, applying right away avoids delaying your first payment.",
+      "action": "Apply for EI"
+    },
+    "eiReport": {
+      "title": "Submit your EI report every two weeks",
+      "body": "Once your claim is active, complete your EI report every two weeks — even if you have no income to report — or your payments will stop.",
+      "action": "Submit your report",
+      "widgetUnavailable": "Employment Insurance reporting status is temporarily unavailable."
+    }
   },
   "auth": {
     "signInRequired": "You need to sign in to view your guided journey."

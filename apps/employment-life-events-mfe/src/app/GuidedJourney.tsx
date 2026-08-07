@@ -4,22 +4,52 @@
 import * as React from 'react';
 import { ComponentType, useEffect, useState } from 'react';
 import { usePaymentHistoryWidgetLoader } from '@tn4consulting/shared-federation-runtime';
+import type { Locale } from '@tn4consulting/shared-i18n';
+import { BENEFITS_CHECKLIST, DEPARTURE_CHECKLIST, EMPLOYABILITY_CHECKLIST } from './checklist-data';
+import { StaticChecklistSection } from './StaticChecklistSection';
+import { JobSearchChecklistItem } from './JobSearchChecklistItem';
+import { EiChecklistItems } from './EiChecklistItems';
 
-export interface GuidedJourneyProps {
+export interface GuidedJourneyLabels {
+  checklistsHeading: string;
+  markDone: string;
+  completed: string;
+  status: string;
   paymentsHeading: string;
   widgetUnavailableText: string;
+  jobSearchTitle: string;
+  jobSearchBody: string;
+  jobSearchAction: string;
+  jobSearchWidgetUnavailable: string;
+  eiHeading: string;
+  eiApplyTitle: string;
+  eiApplyBody: string;
+  eiApplyAction: string;
+  eiReportTitle: string;
+  eiReportBody: string;
+  eiReportAction: string;
+  eiWidgetUnavailable: string;
+}
+
+export interface GuidedJourneyProps {
+  locale: Locale;
+  labels: GuidedJourneyLabels;
 }
 
 /**
- * Genuinely simpler than the Angular version this replaces: that one
- * needed a child EnvironmentInjector (`createEnvironmentInjector`) to
- * apply the providers dashboard's payment-history widget came bundled
- * with. shared-federation-runtime's React Context version has no
- * providers at all -- dashboard's widget is fully self-configuring, same
- * as every other remote in this family -- so there's nothing left to do
- * but call the loader and render whatever component it resolves to.
+ * The guided journey itself: a series of checklists (departure steps,
+ * employability, benefits you might now be eligible for, EI apply/report)
+ * followed by the payment-history widget. Two checklist items -- job
+ * search and EI apply/report -- derive real completion from job-bank's
+ * and employment-insurance's own widgets (see JobSearchChecklistItem/
+ * EiChecklistItems); everything else is self-reported, since nothing else
+ * in the family owns that data (see this app's own CLAUDE.md and
+ * checklist-data.ts's own doc comment). Same host-mediated cross-remote
+ * widget-composition pattern the payment-history widget below already
+ * used, just extended to two more widgets -- see mfe-pot-msca-shell's
+ * routes.tsx, EmploymentLifeEventsRoute.
  */
-export function GuidedJourney({ paymentsHeading, widgetUnavailableText }: GuidedJourneyProps) {
+export function GuidedJourney({ locale, labels }: GuidedJourneyProps) {
   const loadPaymentHistoryWidget = usePaymentHistoryWidgetLoader();
   const [Widget, setWidget] = useState<ComponentType<Record<string, unknown>> | null>(null);
   const [widgetLoadError, setWidgetLoadError] = useState(false);
@@ -49,8 +79,55 @@ export function GuidedJourney({ paymentsHeading, widgetUnavailableText }: Guided
 
   return (
     <section className="guided-journey">
-      <h2>{paymentsHeading}</h2>
-      {widgetLoadError && <p role="alert">{widgetUnavailableText}</p>}
+      <h2>{labels.checklistsHeading}</h2>
+
+      <StaticChecklistSection
+        section={DEPARTURE_CHECKLIST}
+        locale={locale}
+        completedLabel={labels.completed}
+        markDoneLabel={labels.markDone}
+      />
+
+      <StaticChecklistSection
+        section={EMPLOYABILITY_CHECKLIST}
+        locale={locale}
+        completedLabel={labels.completed}
+        markDoneLabel={labels.markDone}
+        leadingItem={
+          <JobSearchChecklistItem
+            title={labels.jobSearchTitle}
+            body={labels.jobSearchBody}
+            actionLabel={labels.jobSearchAction}
+            statusLabel={labels.status}
+            completedLabel={labels.completed}
+            widgetUnavailableText={labels.jobSearchWidgetUnavailable}
+          />
+        }
+      />
+
+      <StaticChecklistSection
+        section={BENEFITS_CHECKLIST}
+        locale={locale}
+        completedLabel={labels.completed}
+        markDoneLabel={labels.markDone}
+      />
+
+      <scds-checklist checklist-heading={labels.eiHeading}>
+        <EiChecklistItems
+          applyTitle={labels.eiApplyTitle}
+          applyBody={labels.eiApplyBody}
+          applyActionLabel={labels.eiApplyAction}
+          reportTitle={labels.eiReportTitle}
+          reportBody={labels.eiReportBody}
+          reportActionLabel={labels.eiReportAction}
+          statusLabel={labels.status}
+          completedLabel={labels.completed}
+          widgetUnavailableText={labels.eiWidgetUnavailable}
+        />
+      </scds-checklist>
+
+      <h2>{labels.paymentsHeading}</h2>
+      {widgetLoadError && <p role="alert">{labels.widgetUnavailableText}</p>}
       {Widget && <Widget />}
     </section>
   );
