@@ -22,10 +22,10 @@ import {
 // remote has no DI tree for a host to populate -- this app does all of
 // that setup itself, on mount (see App.tsx).
 export default withNativeFederation({
-  name: 'employment-life-events',
+  name: 'employment-life-events-mfe',
 
   exposes: {
-    './Component': './apps/employment-life-events/src/app/App.tsx',
+    './Component': './apps/employment-life-events-mfe/src/app/App.tsx',
   },
 
   shared: {

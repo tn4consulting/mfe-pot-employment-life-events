@@ -1,10 +1,10 @@
 apiVersion: v2
-name: employment-life-events
+name: employment-life-events-mfe
 description: >-
-  Deploys the employment-life-events frontend as a Helm release,
+  Deploys the employment-life-events-mfe frontend as a Helm release,
   independent of every other mfe-pot app -- `helm upgrade --install
-  employment-life-events ./charts/employment-life-events` touches only
-  this. No co-located BFF (same as shell), so this chart depends only on
+  employment-life-events-mfe ./charts/employment-life-events-mfe` touches
+  only this. No co-located BFF (same as either shell), so this chart depends only on
   mfe-frontend-lib, not mfe-backend-lib. Extracted into this repo per
   Phase 1 of the platform repo's
   docs/plans/20260801-1935-mfe-pot-polyrepo-split-and-k8s-hosting.md,

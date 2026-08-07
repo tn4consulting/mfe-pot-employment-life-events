@@ -1,9 +1,9 @@
 module.exports = {
-  displayName: 'employment-life-events',
+  displayName: 'employment-life-events-mfe',
   preset: '../../jest.preset.js',
   testEnvironment: 'jsdom',
   setupFilesAfterEnv: ['<rootDir>/src/test-setup.ts'],
-  coverageDirectory: '../../coverage/apps/employment-life-events',
+  coverageDirectory: '../../coverage/apps/employment-life-events-mfe',
   transform: {
     '^.+\\.(ts|tsx)$': [
       'ts-jest',

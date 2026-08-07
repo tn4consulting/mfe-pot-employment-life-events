@@ -1,8 +1,8 @@
 frontend:
-  name: employment-life-events
+  name: employment-life-events-mfe
   replicaCount: 1
   image:
-    repository: mfe-pot-employment-life-events
+    repository: mfe-pot-employment-life-events-mfe
     tag: latest
     pullPolicy: IfNotPresent
   containerPort: 80

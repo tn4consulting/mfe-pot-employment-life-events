@@ -4,7 +4,7 @@
 // index.html and build.mjs/serve.mjs for the rest of the wiring.
 import { initFederation } from '@softarc/native-federation-orchestrator';
 
-initFederation({ 'employment-life-events': './remoteEntry.json' })
+initFederation({ 'employment-life-events-mfe': './remoteEntry.json' })
   .catch((err) => console.error(err))
   .then(() => import('./bootstrap'))
   .catch((err) => console.error(err));

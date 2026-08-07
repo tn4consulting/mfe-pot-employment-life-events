@@ -5,7 +5,7 @@
 # pullPolicy: Never skips any registry round-trip entirely.
 frontend:
   image:
-    repository: mfe-pot-employment-life-events
+    repository: mfe-pot-employment-life-events-mfe
     tag: kind
     pullPolicy: Never
 

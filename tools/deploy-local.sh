@@ -1,5 +1,5 @@
 #!/usr/bin/env bash
-# Builds employment-life-events' image, spins up (or reuses) a local kind
+# Builds employment-life-events-mfe's image, spins up (or reuses) a local kind
 # cluster with ingress-nginx, and helm-upgrades this app's chart onto it --
 # the local equivalent of the kind-validation stage in
 # .github/workflows/ci.yml.
@@ -42,22 +42,22 @@ fi
 
 export DOCKER_BUILDKIT=1
 
-echo "==> Building employment-life-events image..."
+echo "==> Building employment-life-events-mfe image..."
 docker build \
   --secret id=npm_token,src="$token_file" \
-  -t mfe-pot-employment-life-events:kind \
-  -f apps/employment-life-events/Dockerfile .
+  -t mfe-pot-employment-life-events-mfe:kind \
+  -f apps/employment-life-events-mfe/Dockerfile .
 
 echo "==> Loading image into kind..."
-kind load docker-image mfe-pot-employment-life-events:kind --name "$CLUSTER_NAME"
+kind load docker-image mfe-pot-employment-life-events-mfe:kind --name "$CLUSTER_NAME"
 
 echo "==> Updating Helm chart dependencies..."
-helm dependency update charts/employment-life-events
+helm dependency update charts/employment-life-events-mfe
 
-echo "==> Deploying employment-life-events..."
-helm upgrade --install employment-life-events charts/employment-life-events \
-  -f charts/employment-life-events/values.yaml \
-  -f charts/employment-life-events/values-kind.yaml \
+echo "==> Deploying employment-life-events-mfe..."
+helm upgrade --install employment-life-events-mfe charts/employment-life-events-mfe \
+  -f charts/employment-life-events-mfe/values.yaml \
+  -f charts/employment-life-events-mfe/values-kind.yaml \
   --wait --timeout 120s
 
 # values-kind.yaml pins a static image tag with pullPolicy: Never, so a
@@ -67,8 +67,8 @@ helm upgrade --install employment-life-events charts/employment-life-events \
 # content indefinitely (confirmed the hard way: a redeploy silently kept
 # serving a pre-fix JS bundle). Force it explicitly every run.
 echo "==> Restarting deployment to pick up the freshly built image..."
-kubectl rollout restart deployment/employment-life-events
-kubectl rollout status deployment/employment-life-events --timeout=60s
+kubectl rollout restart deployment/employment-life-events-mfe
+kubectl rollout status deployment/employment-life-events-mfe --timeout=60s
 
 echo "==> Waiting for ingress..."
 status=000
@@ -78,9 +78,9 @@ for i in $(seq 1 30); do
   sleep 2
 done
 if [ "$status" != "200" ]; then
-  echo "warning: employment-life-events isn't answering with 200 yet (last status: $status). Check with:" >&2
+  echo "warning: employment-life-events-mfe isn't answering with 200 yet (last status: $status). Check with:" >&2
   echo "  kubectl get pods,ingress" >&2
   exit 1
 fi
 
-echo "==> employment-life-events is up: curl -H \"Host: $HOSTNAME\" http://localhost/"
+echo "==> employment-life-events-mfe is up: curl -H \"Host: $HOSTNAME\" http://localhost/"

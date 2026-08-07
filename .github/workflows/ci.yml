@@ -47,7 +47,7 @@ jobs:
   # ephemeral kind cluster, and confirm it actually serves -- the
   # kind-based validation stage from CLAUDE.md's Hosting section, now
   # automated instead of the one-off manual run it started as.
-  # employment-life-events has no co-located BFF, so this job only
+  # employment-life-events-mfe has no co-located BFF, so this job only
   # builds/loads/checks one image, unlike 3 of the other extracted app
   # repos.
   kind-validation:
@@ -57,9 +57,9 @@ jobs:
       - name: Checkout this repo
         uses: actions/checkout@v4
         with:
-          path: mfe-pot-employment-life-events
+          path: mfe-pot-employment-life-events-mfe
 
-      # charts/employment-life-events/Chart.yaml's library-chart
+      # charts/employment-life-events-mfe/Chart.yaml's library-chart
       # dependency resolves via a sibling-checkout-relative file:// path
       # (see CLAUDE.md) -- checked out alongside this repo so the same
       # relative layout local dev uses (both under one parent directory)
@@ -73,12 +73,12 @@ jobs:
 
       - uses: docker/setup-buildx-action@v3
 
-      - name: Build employment-life-events image
+      - name: Build employment-life-events-mfe image
         uses: docker/build-push-action@v6
         with:
-          context: mfe-pot-employment-life-events
-          file: mfe-pot-employment-life-events/apps/employment-life-events/Dockerfile
-          tags: mfe-pot-employment-life-events:kind
+          context: mfe-pot-employment-life-events-mfe
+          file: mfe-pot-employment-life-events-mfe/apps/employment-life-events-mfe/Dockerfile
+          tags: mfe-pot-employment-life-events-mfe:kind
           load: true
           secrets: |
             npm_token=${{ secrets.GITHUB_TOKEN }}
@@ -105,18 +105,18 @@ jobs:
             --timeout=120s
 
       - name: Load image into kind
-        run: kind load docker-image mfe-pot-employment-life-events:kind
+        run: kind load docker-image mfe-pot-employment-life-events-mfe:kind
 
       - uses: azure/setup-helm@v4
 
       - name: helm dependency update
-        run: helm dependency update mfe-pot-employment-life-events/charts/employment-life-events
+        run: helm dependency update mfe-pot-employment-life-events-mfe/charts/employment-life-events-mfe
 
-      - name: helm install employment-life-events
+      - name: helm install employment-life-events-mfe
         run: |
-          helm install employment-life-events mfe-pot-employment-life-events/charts/employment-life-events \
-            -f mfe-pot-employment-life-events/charts/employment-life-events/values.yaml \
-            -f mfe-pot-employment-life-events/charts/employment-life-events/values-kind.yaml \
+          helm install employment-life-events-mfe mfe-pot-employment-life-events-mfe/charts/employment-life-events-mfe \
+            -f mfe-pot-employment-life-events-mfe/charts/employment-life-events-mfe/values.yaml \
+            -f mfe-pot-employment-life-events-mfe/charts/employment-life-events-mfe/values-kind.yaml \
             --wait --timeout 120s
 
       # This is the one app with no runtime-config surface at all (see
