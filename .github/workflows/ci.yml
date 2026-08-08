@@ -123,9 +123,10 @@ jobs:
             -f mfe-pot-employment-life-events-mfe/charts/employment-life-events-mfe/values-kind.yaml \
             --wait --timeout 120s
 
-      # This is the one app with no runtime-config surface at all (see
-      # CLAUDE.md) -- env.js is expected to be the inert `{}` placeholder,
-      # not a real value, so the check here is just that the app serves.
+      # This app got the runtime-config migration too (see CLAUDE.md --
+      # src/runtime-config.ts + public/env.js were added for ContentClient's
+      # strapiBaseUrl), so the check here matches the other extracted apps'
+      # env.js-script-tag pattern rather than checking for a root element.
       - name: Verify the deployed app is actually reachable
         run: |
           set -eu
@@ -137,10 +138,7 @@ jobs:
             [ "$status" = "200" ] && break
             sleep 2
           done
-          # No env.js script tag to check for here -- unlike every other
-          # extracted app, this one never got the runtime-config migration
-          # (see CLAUDE.md); check for its actual root element instead.
-          curl -sf -H "Host: employment-life-events-mfe.mfe-pot.local" http://localhost/ | grep -qi '<msca-le-root'
+          curl -sf -H "Host: employment-life-events-mfe.mfe-pot.local" http://localhost/ | grep -qi '<script src="env.js">'
           curl -sf -H "Host: employment-life-events-mfe.mfe-pot.local" http://localhost/env.js
 
   # Stage 2: build+push the real image to ECR and deploy to the real AWS EKS
@@ -231,4 +229,4 @@ jobs:
             [ "$status" = "200" ] && break
             sleep 5
           done
-          curl -skf https://employment-life-events-mfe.aws.tn4consulting.com/ | grep -qi '<msca-le-root'
+          curl -skf https://employment-life-events-mfe.aws.tn4consulting.com/ | grep -qi '<script src="env.js">'
