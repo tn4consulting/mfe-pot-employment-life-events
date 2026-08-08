@@ -11,6 +11,7 @@ frontend:
     pullPolicy: IfNotPresent
   runtimeConfig:
     strapiBaseUrl: "https://cms.aws.tn4consulting.com"
+    otelExporterOtlpEndpoint: "https://otel.aws.tn4consulting.com"
 
 ingress:
   host: employment-life-events-mfe.aws.tn4consulting.com

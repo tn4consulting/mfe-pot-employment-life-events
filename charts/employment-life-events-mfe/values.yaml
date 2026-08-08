@@ -14,6 +14,9 @@ frontend:
   # mfe-pot-platform's charts/strapi, not in-cluster Service DNS.
   runtimeConfig:
     strapiBaseUrl: "http://cms.mfe-pot.local"
+    # Browser-reachable Ingress host, not in-cluster Service DNS -- see
+    # mfe-pot-platform/charts/otel-collector.
+    otelExporterOtlpEndpoint: "http://otel.mfe-pot.local"
 
 ingress:
   host: employment-life-events-mfe.mfe-pot.local

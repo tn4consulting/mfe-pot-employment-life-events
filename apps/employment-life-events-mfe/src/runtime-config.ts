@@ -1,4 +1,5 @@
 import { fetchRuntimeConfig } from '@tn4consulting/shared-runtime-config';
+import { initBrowserObservability } from '@tn4consulting/shared-observability';
 
 /**
  * Replaces environment.ts/environment.prod.ts + fileReplacements -- see
@@ -20,8 +21,20 @@ import { fetchRuntimeConfig } from '@tn4consulting/shared-runtime-config';
  */
 const devDefaults = {
   strapiBaseUrl: 'http://localhost:1337',
+  // undefined -- no local collector needed for plain `nx serve`, see
+  // shared-observability's initBrowserObservability.
+  otelExporterOtlpEndpoint: undefined as string | undefined,
 };
 
-export function loadRuntimeConfig(ownOriginUrl: string) {
-  return fetchRuntimeConfig(ownOriginUrl, devDefaults);
+export async function loadRuntimeConfig(ownOriginUrl: string) {
+  const config = await fetchRuntimeConfig(ownOriginUrl, devDefaults);
+  // Single wiring point for this app's one exposed entry point (App.tsx).
+  // Idempotent, so a second call is safe. No BFF of its own, so no
+  // propagateTraceHeaderCorsUrls needed -- see
+  // mfe-pot-platform/CLAUDE.md's observability section.
+  initBrowserObservability({
+    serviceName: 'employment-life-events-mfe',
+    otlpEndpoint: config.otelExporterOtlpEndpoint,
+  });
+  return config;
 }
