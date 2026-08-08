@@ -1,0 +1,19 @@
+# Overrides layered on top of values.yaml for a real AWS EKS deployment (see
+# mfe-pot/docs/plans/20260808-1500-mfe-pot-aws-eks-terraform.md). See
+# mfe-pot-job-bank-mfe/charts/job-bank-mfe/values-eks.yaml for the fuller
+# explanatory comments this pattern was worked out against first.
+#
+# No backend section -- this app has no co-located BFF.
+
+frontend:
+  image:
+    repository: 147318891438.dkr.ecr.ca-central-1.amazonaws.com/mfe-pot-employment-life-events-mfe
+    pullPolicy: IfNotPresent
+  runtimeConfig:
+    strapiBaseUrl: "https://cms.aws.tn4consulting.com"
+
+ingress:
+  host: employment-life-events-mfe.aws.tn4consulting.com
+  tls:
+    enabled: true
+    clusterIssuer: letsencrypt-staging
